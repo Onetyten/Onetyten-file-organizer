@@ -1,4 +1,3 @@
-const { error } = require('console')
 const fs = require ('fs')
 const path = require ('path')
 const fileExtensionsArr = []
@@ -9,28 +8,42 @@ fs.readdir('./AllSkyFree',(err,file)=>{
         const fileExt = path.extname(file[i])
         if (!fileExtensionsArr.includes(fileExt)){
             fileExtensionsArr.push(fileExt)
-        }   
+        }   ;
     }
     console.log(fileExtensionsArr)
     makeFolder(fileExtensionsArr)
-    sortFiles(file)
+    sortFolder(file)
+
 
 
 })
 
 function makeFolder(Array) {
-    for (let i = 0; i < Array.length; i++) {
-        const purename = Array[i].replace('.',' ')
-        fs.mkdir(`./AllSkyFree/${purename} Folder`,{recursive:true},(err)=>{
-            if (err) throw err
-        })
-        console.log(Array[i]);   
-    }
+    Array.forEach(ext=>{
+        const folderName = ext.substring(1) || 'no extension'
+        const pathName = `./AllSkyFree/${folderName} Folder`
+        if( !fs.existsSync(pathName)){
+            fs.mkdir(pathName,{recursive:true},(err)=>{
+                if (err) {
+                    console.log('error creating folder',err)
+                }
+            })
+        }
+        
+    })
 }
 
-function sortFiles(files){
-    console.log(files)
-    files.forEach(file => {
-        fs.rename(``,``) 
-    });
+function sortFolder(files){
+    files.forEach(file =>{
+        const fileExt = path.extname(file)
+        const folderName = fileExt.substring(1)
+        const oldPath = path.join("./AllSkyFree",file)
+        const newPath = path.join("./AllSkyFree",`${folderName} Folder`,file)
+        fs.rename(oldPath,newPath,err=>{
+            if (err){
+                console.log("error moving file",err)
+            }
+        })
+
+    })
 }
