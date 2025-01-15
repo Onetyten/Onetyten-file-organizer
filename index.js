@@ -37,13 +37,32 @@ function sortFolder(files){
     files.forEach(file =>{
         const fileExt = path.extname(file)
         const folderName = fileExt.substring(1)
+        const folderPath = path.join("./AllSkyFree",`${folderName} Folder`)
         const oldPath = path.join("./AllSkyFree",file)
-        const newPath = path.join("./AllSkyFree",`${folderName} Folder`,file)
-        fs.rename(oldPath,newPath,err=>{
-            if (err){
-                console.log("error moving file",err)
+        const newPath = path.join(folderPath,file)
+        if (fs.existsSync(folderPath))
+        {
+            fs.rename(oldPath,newPath,err=>{
+                if (err){
+                    console.log("error moving file",err)
+                }
+            })
+        }
+        else{
+            if (!fs.existsSync("./AllSkyFree",`extension Folder`)){
+                fs.mkdir("./AllSkyFree",`extension Folder`,{recursive:true},(err)=>{
+                    if (err) {
+                        console.log('error creating extension folder',err)
+                    }
+                })
             }
-        })
+            fs.rename(oldPath,path.join("./AllSkyFree",`extension Folder`,file),err=>{
+                if (err){
+                    console.log("error moving file",err)
+                }
+            }) 
+        }
+        
 
     })
 }
